@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:location_tracker/src/Widget/Button.dart';
+import 'package:location_tracker/src/Widget/DropDownWidget.dart';
+import 'package:location_tracker/src/Widget/TextInputWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LocationScreen.dart';
@@ -20,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  List<String> _locations = [
+  List<String> _vehicleTypes = [
     'Car',
     'Van',
     'Bus',
@@ -54,84 +57,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: Theme.of(context).textTheme.headline1,
                 textAlign: TextAlign.center,
               ),
-              TextFormField(
+              TextInputWidget(
                 controller: _vehicleNumberController,
-                style: Theme.of(context).textTheme.bodyText1,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter your vehicle number';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  hintText: 'Enter Vehicle Number',
-                ),
+                hintText: "Enter vehicle number",
+                validatorMessage: "Please enter your vehicle number!",
               ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(left: 8.0),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(width: 0.0001),
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.bodyText1,
-                  hint: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('Vehicle Type'),
-                  ),
-                  value: _selectedVehicleType,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedVehicleType = newValue;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your vehicle type';
-                    }
-                    return null;
-                  },
-                  items: _locations.map((location) {
-                    return DropdownMenuItem(
-                      child: Text(location),
-                      value: location,
+              DropDownWidget(
+                hintText: "Select vehicle type",
+                validatorMessage: "Please select vehicle type",
+                optionList: _vehicleTypes,
+              ),
+              Button(
+                name: "Save",
+                buttonOnPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    savePreferences(
+                      _selectedVehicleType,
+                      _vehicleNumberController.text,
                     );
-                  }).toList(),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Material(
-                  borderRadius: BorderRadius.circular(32.0),
-                  color: Colors.blueAccent,
-                  shadowColor: Colors.blueAccent.shade100,
-                  elevation: 5.0,
-                  child: MaterialButton(
-                    minWidth: 150.0,
-                    height: 45.0,
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        savePreferences(_selectedVehicleType, _vehicleNumberController.text, );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LocationScreen()),
-                        );
-                      } else {
-                        print("Not valid");
-                      }
-                    },
-                    child: Text('Save', style: Theme.of(context).textTheme.button),
-                  ),
-                ),
-              ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LocationScreen()),
+                    );
+                  } else {
+                    print("Not valid");
+                  }
+                },
+              )
             ],
           ),
         ),
@@ -139,8 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
 
 savePreferences(String type, String number) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

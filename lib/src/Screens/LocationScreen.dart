@@ -82,6 +82,8 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
+
+
   @override
   void initState() {
     getPreferences();
