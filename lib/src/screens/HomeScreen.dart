@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:location_tracker/src/Widget/Button.dart';
-import 'package:location_tracker/src/Widget/DropDownWidget.dart';
-import 'package:location_tracker/src/Widget/TextInputWidget.dart';
+import 'package:location_tracker/src/widgets/Button.dart';
+import 'package:location_tracker/src/widgets/DropDownWidget.dart';
+import 'package:location_tracker/src/widgets/TextInputWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LocationScreen.dart';

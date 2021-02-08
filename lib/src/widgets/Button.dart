@@ -17,7 +17,7 @@ class Button extends StatelessWidget {
         shadowColor: Colors.blueAccent.shade100,
         elevation: 5.0,
         child: MaterialButton(
-          child: Text('Save', style: Theme.of(context).textTheme.button),
+          child: Text(name, style: Theme.of(context).textTheme.button),
           minWidth: 150.0,
           height: 45.0,
           onPressed: buttonOnPressed,
