@@ -70,18 +70,21 @@ class _HomeScreenState extends State<HomeScreen> {
               Button(
                 name: "Save",
                 buttonOnPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    savePreferences(
-                      _selectedVehicleType,
-                      _vehicleNumberController.text,
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LocationScreen()),
-                    );
-                  } else {
-                    print("Not valid");
-                  }
+                  print(_selectedVehicleType);
+                  // if (_formKey.currentState.validate()) {
+                  //   savePreferences(
+                  //     _selectedVehicleType,
+                  //     _vehicleNumberController.text,
+                  //   ).then((value) => {
+                  //         Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => LocationScreen()),
+                  //         )
+                  //       });
+                  // } else {
+                  //   print("Not valid");
+                  // }
                 },
               )
             ],
@@ -92,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-savePreferences(String type, String number) async {
+Future<void> savePreferences(String type, String number) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('number', number);
   prefs.setString('type', type);
