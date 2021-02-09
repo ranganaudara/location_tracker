@@ -16,7 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _formKey = GlobalKey<FormState>();
   String _selectedVehicleType;
   final _vehicleNumberController = TextEditingController();
-  bool _validate = false;
+
+  set string(String value) => setState(() => _selectedVehicleType = value);
 
   @override
   void initState() {
@@ -54,7 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               Text(
                 "LOCATION TRACKER",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline1,
                 textAlign: TextAlign.center,
               ),
               TextInputWidget(
@@ -66,25 +70,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: "Select vehicle type",
                 validatorMessage: "Please select vehicle type",
                 optionList: _vehicleTypes,
+                getSelectedOption: (selectedValue)=> setState(()=> _selectedVehicleType = selectedValue),
               ),
               Button(
                 name: "Save",
                 buttonOnPressed: () {
-                  print(_selectedVehicleType);
-                  // if (_formKey.currentState.validate()) {
-                  //   savePreferences(
-                  //     _selectedVehicleType,
-                  //     _vehicleNumberController.text,
-                  //   ).then((value) => {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => LocationScreen()),
-                  //         )
-                  //       });
-                  // } else {
-                  //   print("Not valid");
-                  // }
+                  if (_formKey.currentState.validate()) {
+                    savePreferences(
+                      _selectedVehicleType,
+                      _vehicleNumberController.text,
+                    ).then((value) => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LocationScreen()),
+                          )
+                        });
+                  } else {
+                    print("Not valid");
+                  }
                 },
               )
             ],

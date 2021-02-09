@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+typedef void StringCallback(String val);
+
 class DropDownWidget extends StatefulWidget {
   final String validatorMessage;
   final String hintText;
   final List<String> optionList;
+  final StringCallback getSelectedOption;
 
   DropDownWidget(
-      {this.validatorMessage, this.hintText, this.optionList});
+      {this.validatorMessage, this.hintText, this.optionList, this.getSelectedOption});
 
   @override
   _DropDownWidgetState createState() => _DropDownWidgetState();
@@ -36,6 +39,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
         ),
         value: selectedValue,
         onChanged: (newValue) {
+          widget.getSelectedOption(newValue);
           setState(() {
             selectedValue = newValue;
           });
