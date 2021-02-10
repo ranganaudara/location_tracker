@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_tracker/src/widgets/Button.dart';
@@ -13,13 +14,15 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   final Location location = Location();
-  String _status = "Stopped";
   String _error;
+  String _vehicleNumber;
+  String _vehicleType;
   bool _backgroundModeEnabled;
   bool _serviceEnabled;
   LocationData _location;
   StreamSubscription<LocationData> _locationSubscription;
   PermissionStatus _permissionGranted;
+  final firestoreInstance = FirebaseFirestore.instance;
 
   //Check Permission
   Future<PermissionStatus> _checkPermissions() async {
@@ -83,6 +86,7 @@ class _LocationScreenState extends State<LocationScreen> {
             _error = null;
             _location = currentLocation;
           });
+          _feedLocationData();
         });
   }
 
@@ -113,6 +117,22 @@ class _LocationScreenState extends State<LocationScreen> {
     }
   }
 
+  //Feed location data
+  _feedLocationData(){
+    firestoreInstance.collection("Location Data").add(
+        {
+          "vehicle_number" : _vehicleNumber,
+          "vehicle_type" : _vehicleType,
+          "longitude" : _location.longitude,
+          "latitude" : _location.latitude,
+          "speed":_location.speed,
+          "heading":_location.heading,
+          "time": _location.time,
+        }).then((value){
+      print(value.id);
+    });
+  }
+
 
   _startOnPress(){
     _checkBackgroundMode().then((value) => {
@@ -122,6 +142,7 @@ class _LocationScreenState extends State<LocationScreen> {
     });
 
     _listenLocation();
+
   }
 
   _pauseOnPress(){
@@ -171,7 +192,10 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   void initState() {
-    getPreferences();
+    _getPreferences().then((value) => {
+      _vehicleNumber = value.getString('number'),
+      _vehicleType = value.getString('type')
+    });
     _checkPermissions().then((value) => {
           if (value != PermissionStatus.granted)
             _requestPermission()
@@ -184,8 +208,7 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 }
 
-getPreferences() async {
+Future<SharedPreferences> _getPreferences() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  print("number: " + prefs.getString('number'));
-  print("type: " + prefs.getString('type'));
+  return prefs;
 }
