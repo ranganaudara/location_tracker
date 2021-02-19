@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:location_tracker/src/widgets/Button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
+import 'package:intl/intl.dart';
+
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -127,10 +129,17 @@ class _LocationScreenState extends State<LocationScreen> {
           "latitude" : _location.latitude,
           "speed":_location.speed,
           "heading":_location.heading,
-          "time": _location.time,
+          "time": _readTimestamp(_location.time),
         }).then((value){
       print(value.id);
     });
+  }
+
+  //Convert time stamp to DateTime
+  String _readTimestamp(double timestamp) {
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp.toInt());
+    var formattedDateTime = DateFormat.yMd().add_jm().format(date);
+    return formattedDateTime.toString();
   }
 
 
